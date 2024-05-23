@@ -2,10 +2,12 @@ from datetime import datetime, timedelta
 import typing
 
 from cryptography.fernet import Fernet
+from fastapi.responses import JSONResponse
 from jose import jwt
 
 from models import UserDB
 from settings import USER_DB, SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRED
+from schemas.auth import Payload, CustomResponse
 
 
 f = Fernet(SECRET_KEY)
@@ -56,6 +58,27 @@ def create_refresh_token(data: typing.Dict[str, typing.Any]) -> str:
     expiration_delta = timedelta(days=30)
     return create_token(data, expiration_delta)
 
+
+def get_payload_from_token(access_token: str) -> Payload:
+    return Payload(**jwt.decode(access_token, SECRET_KEY, algorithms=[JWT_ALGORITHM]))
+
+
+def create_response(
+        message: str,
+        success: bool = False,
+        status_code: int = 400,
+        data: typing.Union[typing.Dict[str, typing.Any], typing.List[typing.Any], None] = None
+) -> JSONResponse:
+    response = CustomResponse(
+        success=success,
+        code=status_code,
+        message=message,
+        data=data
+    )
+    return JSONResponse(
+        response.dict(),
+        status_code=status_code
+    )
 
 
 
