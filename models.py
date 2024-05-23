@@ -23,7 +23,7 @@ class UserDB(BaseModel):
     id_role: str
     username: str
     email: str
-    passwrd: str
+    password: str
 
 
 class SupplierDB(BaseModel):
