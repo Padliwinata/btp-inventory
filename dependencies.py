@@ -3,6 +3,7 @@ import typing
 
 from cryptography.fernet import Fernet
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 
 from models import UserDB
@@ -11,6 +12,7 @@ from schemas.auth import Payload, CustomResponse
 
 
 f = Fernet(SECRET_KEY)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/auth', auto_error=False)
 
 
 def encrypt_password(raw_password: str) -> str:
