@@ -2,12 +2,14 @@ from datetime import datetime, timedelta
 import typing
 
 from cryptography.fernet import Fernet
+from fastapi import Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 
+from db import db_user
 from models import UserDB
-from settings import USER_DB, SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRED
+from settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRED
 from schemas.auth import Payload, CustomResponse
 
 
@@ -26,7 +28,7 @@ def decrypt_password(encrypted_password: str) -> str:
 
 
 def authenticate_user(username: str, password: str) -> typing.Union[UserDB, None]:
-    response_data = USER_DB.fetch({'username': username})
+    response_data = db_user.fetch({'username': username})
     if response_data.count == 0:
         return None
 
@@ -39,8 +41,8 @@ def authenticate_user(username: str, password: str) -> typing.Union[UserDB, None
     return user_instance
 
 
-def create_token(data: typing.Dict[str, typing.Any], expiration_delta: timedelta, offset_hours: int = 0) -> str:
-    to_encode = data.copy()
+def create_token(username: str, expiration_delta: timedelta, offset_hours: int = 0) -> str:
+    to_encode = {'sub': username}
     now = datetime.now()
     to_encode.update({
         'exp': now + expiration_delta + timedelta(hours=offset_hours),
@@ -50,15 +52,15 @@ def create_token(data: typing.Dict[str, typing.Any], expiration_delta: timedelta
     return encoded_jwt
 
 
-def create_access_token(data: typing.Dict[str, typing.Any]) -> str:
+def create_access_token(username: str) -> str:
     expiration_delta = timedelta(seconds=JWT_EXPIRED)
     offset_hours = -7
-    return create_token(data, expiration_delta, offset_hours)
+    return create_token(username, expiration_delta, offset_hours)
 
 
-def create_refresh_token(data: typing.Dict[str, typing.Any]) -> str:
+def create_refresh_token(username: str) -> str:
     expiration_delta = timedelta(days=30)
-    return create_token(data, expiration_delta)
+    return create_token(username, expiration_delta)
 
 
 def get_payload_from_token(access_token: str) -> Payload:
@@ -81,6 +83,11 @@ def create_response(
         response.dict(),
         status_code=status_code
     )
+
+
+def get_user(access_token: str = Depends(oauth2_scheme)) -> typing.Union[UserDB, None]:
+    if not access_token:
+
 
 
 
