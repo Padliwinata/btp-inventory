@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api import auth
+from api import auth, development
 from exceptions import DependencyException
 
 
@@ -26,5 +26,6 @@ async def custom_handler(exc: DependencyException) -> JSONResponse:
     )
 
 app.include_router(auth.router)
+app.include_router(development.router)
 
 
