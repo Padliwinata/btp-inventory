@@ -2,12 +2,13 @@ from datetime import datetime, timedelta
 import typing
 
 from cryptography.fernet import Fernet
-from fastapi import Depends
+from fastapi import Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
+from jose import jwt, JWTError
 
 from db import db_user
+from exceptions import DependencyException
 from models import UserDB
 from settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRED
 from schemas.auth import Payload, CustomResponse
@@ -87,6 +88,38 @@ def create_response(
 
 def get_user(access_token: str = Depends(oauth2_scheme)) -> typing.Union[UserDB, None]:
     if not access_token:
+        response_error = CustomResponse(
+            success=False,
+            code=status.HTTP_401_BAD_REQUEST,
+            message="Authorization token not found",
+            data=None
+        )
+        raise DependencyException(status_code=status.HTTP_401_UNAUTHORIZED, detail_info=response_error.dict())
+    try:
+        payload = get_payload_from_token(access_token)
+    except JWTError:
+        response_error = CustomResponse(
+            success=False,
+            code=status.HTTP_401_BAD_REQUEST,
+            message="Authorization token is invalid",
+            data=None
+        )
+        raise DependencyException(status_code=status.HTTP_401_UNAUTHORIZED, detail_info=response_error.dict())
+
+    response_data = db_user.fetch({'username': payload.sub})
+    if response_data.count == 0:
+        response_error = CustomResponse(
+            success=False,
+            code=status.HTTP_401_BAD_REQUEST,
+            message="Authorization token subject is not found",
+            data=None
+        )
+        raise DependencyException(status_code=status.HTTP_401_UNAUTHORIZED, detail_info=response_error.dict())
+
+    user_data = response_data.items[0]
+    return UserDB(**user_data)
+
+
 
 
 
