@@ -20,3 +20,14 @@ class CustomResponse(BaseModel):
     message: str
     data: typing.Union[typing.Dict[str, typing.Any], typing.List[typing.Any], None]
 
+
+class RegisterForm(BaseModel):
+    username: str
+    email: str
+    password: str
+
+
+class LoginForm(BaseModel):
+    identifier: str
+    password: str
+
