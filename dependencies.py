@@ -15,7 +15,7 @@ from schemas.auth import Payload, CustomResponse
 
 
 f = Fernet(SECRET_KEY)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/auth', auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/login', auto_error=False)
 
 
 def encrypt_password(raw_password: str) -> str:
@@ -100,7 +100,7 @@ def get_user(access_token: str = Depends(oauth2_scheme)) -> typing.Union[UserDB,
     except JWTError:
         response_error = CustomResponse(
             success=False,
-            code=status.HTTP_401_BAD_REQUEST,
+            code=status.HTTP_401_UNAUTHORIZED,
             message="Authorization token is invalid",
             data=None
         )

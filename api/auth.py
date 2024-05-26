@@ -1,11 +1,13 @@
-from fastapi import Depends, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from base import router
 from db import *
-from dependencies import create_response, encrypt_password, decrypt_password, create_refresh_token, create_access_token
-from schemas.auth import RegisterForm
+from dependencies import create_response, encrypt_password, decrypt_password, create_refresh_token, create_access_token, get_user
+from models import UserDB
+from schemas.auth import RegisterForm, CustomResponseDev
+
+router = APIRouter(prefix='/api')
 
 
 @router.post('/register', tags=['Auth'])
@@ -51,21 +53,43 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> JSONRespons
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
+    access_token = create_access_token(user_data['username'])
+    refresh_token = create_refresh_token(user_data['username'])
+
     return_data = {
-        'access_token': create_access_token(user_data['username']),
-        'refresh_token': create_refresh_token(user_data['username']),
+        'access_token': access_token,
+        'refresh_token': refresh_token,
         'token_type': 'bearer'
     }
 
-    return create_response(
-        message="Login successful",
+    resp_dev = CustomResponseDev(
         success=True,
-        status_code=status.HTTP_200_OK,
-        data=return_data
+        code=status.HTTP_200_OK,
+        message="Authenticated",
+        data=return_data,
+        access_token=access_token
+    )
+    return JSONResponse(
+        resp_dev.dict(),
+        status_code=status.HTTP_200_OK
     )
 
+    # return create_response(
+    #     message="Login successful",
+    #     success=True,
+    #     status_code=status.HTTP_200_OK,
+    #     data=return_data
+    # )
 
 
+@router.get('/check', tags=['Auth'])
+async def check_authorization(user: UserDB = Depends(get_user)):
+    return create_response(
+        message="Authorized",
+        success=True,
+        status_code=status.HTTP_200_OK,
+        data=user.dict()
+    )
 
 
 
