@@ -26,6 +26,7 @@ class CustomResponseDev(CustomResponse):
 
 class RegisterForm(BaseModel):
     username: str
+    # role: str
     email: str
     password: str
 
