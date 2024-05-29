@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api import auth, development
+from api import auth, development, general
 from exceptions import DependencyException
 
 
@@ -19,13 +19,14 @@ app.add_middleware(
 
 
 @app.exception_handler(DependencyException)
-async def custom_handler(exc: DependencyException) -> JSONResponse:
+async def custom_handler(request: Request, exc: DependencyException) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
         content=exc.detail_info
     )
 
-app.include_router(auth.router)
 app.include_router(development.router)
+app.include_router(auth.router)
+app.include_router(general.router)
 
 

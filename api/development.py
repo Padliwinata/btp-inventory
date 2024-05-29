@@ -1,10 +1,10 @@
-from fastapi import Depends, status
-from fastapi.responses import JSONResponse
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, status
 
-from base import router
 from db import *
-from dependencies import create_response, encrypt_password, decrypt_password, create_refresh_token, create_access_token
+from dependencies import create_response
+
+
+router = APIRouter(prefix='/api')
 
 
 @router.delete("/database", tags=['Development'])

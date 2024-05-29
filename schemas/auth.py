@@ -10,7 +10,6 @@ class TokenResponse(BaseModel):
 
 class Payload(BaseModel):
     sub: str
-    role: str
     iat: int
 
 
@@ -21,8 +20,13 @@ class CustomResponse(BaseModel):
     data: typing.Union[typing.Dict[str, typing.Any], typing.List[typing.Any], None]
 
 
+class CustomResponseDev(CustomResponse):
+    access_token: typing.Optional[str]
+
+
 class RegisterForm(BaseModel):
     username: str
+    # role: str
     email: str
     password: str
 
