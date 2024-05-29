@@ -15,7 +15,7 @@ from schemas.auth import Payload, CustomResponse
 
 
 f = Fernet(SECRET_KEY)
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/login', auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='api/auth/login', auto_error=False)
 
 
 def encrypt_password(raw_password: str) -> str:

@@ -4,7 +4,7 @@ from db import *
 from dependencies import create_response
 
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix='/api/development')
 
 
 @router.delete("/database", tags=['Development'])

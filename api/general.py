@@ -3,7 +3,7 @@ from fastapi import APIRouter, status
 from db import db_role
 from dependencies import create_response
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix='/api/general')
 
 
 @router.get('/role')
