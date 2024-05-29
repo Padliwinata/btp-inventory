@@ -7,7 +7,7 @@ from dependencies import create_response, encrypt_password, decrypt_password, cr
 from models import UserDB
 from schemas.auth import RegisterForm, CustomResponseDev
 
-router = APIRouter(prefix='/api')
+router = APIRouter(prefix='/api/auth')
 
 
 @router.post('/register', tags=['Auth'])
