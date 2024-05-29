@@ -22,17 +22,17 @@ async def register(form: RegisterForm) -> JSONResponse:
 
     user_data = form.dict()
 
-    # user_role = db_role.get(user_data['role'])
-    # if not user_role:
-    #     return create_response(
-    #         message="Invalid role key",
-    #         success=False,
-    #         status_code=status.HTTP_400_BAD_REQUEST
-    #     )
-
     role_data = db_role.fetch({'name': 'staff'})
+    if role_data.count == 0:
+        return create_response(
+            message="Error default database not generated",
+            success=False,
+            status_code=status.HTTP_501_NOT_IMPLEMENTED
+        )
 
     user_data['password'] = encrypt_password(user_data['password'])
+    user_data['is_active'] = False
+    user_data['id_role'] = role_data.items[0]['key']
 
     db_user.put(user_data)
 

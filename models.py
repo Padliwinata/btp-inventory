@@ -23,6 +23,7 @@ class UserDB(BaseModel):
     id_role: str
     username: str
     email: str
+    is_active: bool
     password: str
 
 
