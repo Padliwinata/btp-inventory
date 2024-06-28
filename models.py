@@ -65,3 +65,11 @@ class MovementDB(BaseModel):
     id_room: str
     date: str
 
+
+class MovementRequestDB(BaseModel):
+    name: str
+    letter: str
+    product: str
+    before: str
+    after: str
+
