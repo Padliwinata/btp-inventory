@@ -10,13 +10,13 @@ charset-normalizer
 click
 colorama
 coverage
-cryptography
+cryptography~=42.0.2
 deta==1.2.0
 dill
 dnspython==2.6.1
 ecdsa
 email_validator==2.1.1
-fastapi
+fastapi~=0.103.0
 fastapi-mail==1.4.1
 future
 h11
@@ -60,3 +60,6 @@ typing_extensions
 urllib3
 uvicorn
 wrapt
+pymysql
+
+sqlalchemy~=2.0.31

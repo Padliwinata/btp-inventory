@@ -14,12 +14,12 @@ class TransactionType(Enum):
 
 
 class RoleDB(BaseModel):
-    key: str
+    data_key: str
     name: str
 
 
 class UserDB(BaseModel):
-    key: str
+    data_key: str
     id_role: str
     username: str
     email: str
@@ -28,13 +28,13 @@ class UserDB(BaseModel):
 
 
 class SupplierDB(BaseModel):
-    key: str
+    data_key: str
     name: str
     phone: str
 
 
 class ProductDB(BaseModel):
-    key: str
+    data_key: str
     id_supplier: str
     name: str
     description: str
@@ -42,7 +42,7 @@ class ProductDB(BaseModel):
 
 
 class TransactionDB(BaseModel):
-    key: str
+    data_key: str
     id_product: str
     id_user: str
     category: TransactionType
@@ -51,7 +51,7 @@ class TransactionDB(BaseModel):
 
 
 class RoomDB(BaseModel):
-    key: str
+    data_key: str
     name: str
     building: str
     number: str
@@ -59,7 +59,7 @@ class RoomDB(BaseModel):
 
 
 class MovementDB(BaseModel):
-    key: str
+    data_key: str
     id_product: str
     id_user: str
     id_room: str

@@ -12,7 +12,7 @@ router = APIRouter(prefix='/api/auth')
 
 @router.post('/register', tags=['Auth'])
 async def register(form: RegisterForm) -> JSONResponse:
-    response_data = db_user.fetch([{'username': form.username}, {'email': form.email}])
+    response_data = db_user.fetch({'username': form.username})
     if response_data.count != 0:
         return create_response(
             message="Username or email already used",
