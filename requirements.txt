@@ -62,4 +62,5 @@ uvicorn
 wrapt
 pymysql
 
+pymongo
 sqlalchemy~=2.0.31

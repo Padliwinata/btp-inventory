@@ -12,7 +12,7 @@ router = APIRouter(prefix='/api/auth')
 
 @router.post('/register', tags=['Auth'])
 async def register(form: RegisterForm) -> JSONResponse:
-    response_data = db_user.fetch({'username': form.username})
+    response_data = db_users.find_one({'username': form.username})
     if response_data.count != 0:
         return create_response(
             message="Username or email already used",
@@ -22,7 +22,7 @@ async def register(form: RegisterForm) -> JSONResponse:
 
     user_data = form.dict()
 
-    role_data = db_role.fetch({'name': 'staff'})
+    role_data = db_roles.find_one({'name': 'staff'})
     if role_data.count == 0:
         return create_response(
             message="Error default database not generated",
@@ -34,7 +34,7 @@ async def register(form: RegisterForm) -> JSONResponse:
     user_data['is_active'] = False
     user_data['id_role'] = role_data.items[0]['key']
 
-    db_user.put(user_data)
+    db_users.put(user_data)
 
     del user_data['password']
 
@@ -48,7 +48,7 @@ async def register(form: RegisterForm) -> JSONResponse:
 
 @router.post('/login', tags=['Auth'])
 async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> JSONResponse:
-    response_data = db_user.fetch([{'username': form_data.username}, {'email': form_data.username}])
+    response_data = db_users.fetch([{'username': form_data.username}, {'email': form_data.username}])
     if response_data.count == 0:
         return create_response(
             message="Account information not found",

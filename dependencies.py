@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 
-from db import db_user
+from db import db_users
 from exceptions import DependencyException
 from models import UserDB
 from settings import SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRED
